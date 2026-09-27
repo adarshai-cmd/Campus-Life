@@ -9,6 +9,7 @@ import { useTravel } from '@/context/TravelContext';
 import { useProfile } from '@/context/ProfileContext';
 import { SUPPORTED_CURRENCIES } from '@/types/profile';
 import { Expense } from '@/types/money';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 interface ExpenseModalProps {
   isOpen: boolean;
@@ -43,7 +44,7 @@ function ExpenseForm({
     SUPPORTED_CURRENCIES.find((c) => c.code === activeProfile?.currency) ||
     SUPPORTED_CURRENCIES[0];
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getLocalDateString();
 
   const [description, setDescription] = useState(initialData?.description || '');
   const [amount, setAmount] = useState(

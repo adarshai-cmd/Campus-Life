@@ -10,6 +10,7 @@ import { useProfile } from '@/context/ProfileContext';
 import { SUPPORTED_CURRENCIES } from '@/types/profile';
 import { TRAVEL_SUB_CATEGORIES, TravelSubCategory } from '@/types/travel';
 import { Expense } from '@/types/money';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 interface TripExpenseModalProps {
   isOpen: boolean;
@@ -41,7 +42,7 @@ function TripExpenseForm({
     (initialExpense?.tripSubCategory as TravelSubCategory) || 'Transport'
   );
   const [date, setDate] = useState(
-    initialExpense?.date || new Date().toISOString().split('T')[0]
+    initialExpense?.date || getLocalDateString()
   );
   const [notes, setNotes] = useState(initialExpense?.notes || '');
   const [error, setError] = useState('');

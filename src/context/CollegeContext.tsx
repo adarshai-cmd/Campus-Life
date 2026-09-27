@@ -14,6 +14,7 @@ import {
 import { storageService } from '@/services/storage/storageService';
 import { useProfile } from './ProfileContext';
 import { calculateAttendanceStats } from '@/services/rules/attendanceMath';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 interface MarkAttendanceResult {
   success: boolean;
@@ -74,14 +75,6 @@ const STORAGE_KEY_ATTENDANCE_LOGS = 'college_attendance_logs_v2';
 const STORAGE_KEY_ASSIGNMENTS = 'college_assignments_v2';
 const STORAGE_KEY_EXAMS = 'college_exams_v2';
 const STORAGE_KEY_PROJECTS = 'college_projects_v2';
-
-function getLocalDateString(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
 
 export function CollegeProvider({ children }: { children: React.ReactNode }) {
   const { activeProfile } = useProfile();

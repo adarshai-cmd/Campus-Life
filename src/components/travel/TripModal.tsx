@@ -6,6 +6,7 @@ import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { useTravel } from '@/context/TravelContext';
 import { Trip, TRAVEL_MODES, TravelMode } from '@/types/travel';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 interface TripModalProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ function TripForm({
   onSave: (data: Omit<Trip, 'id' | 'createdAt'>) => void;
   onCancel: () => void;
 }) {
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getLocalDateString();
 
   const [tripName, setTripName] = useState(initialData?.tripName || '');
   const [destination, setDestination] = useState(initialData?.destination || '');

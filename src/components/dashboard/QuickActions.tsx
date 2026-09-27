@@ -9,6 +9,7 @@ import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
 import { useCollege } from '@/context/CollegeContext';
 import { SkillModal } from '@/components/skills/SkillModal';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 export function QuickActions() {
   const { addAssignment } = useCollege();
@@ -22,7 +23,7 @@ export function QuickActions() {
   const [assignmentTitle, setAssignmentTitle] = useState('');
   const [assignmentSubject, setAssignmentSubject] = useState('');
   const [assignmentDeadline, setAssignmentDeadline] = useState(
-    () => new Date().toISOString().split('T')[0]
+    () => getLocalDateString()
   );
   const [assignmentError, setAssignmentError] = useState('');
 
@@ -37,7 +38,7 @@ export function QuickActions() {
       title: assignmentTitle.trim(),
       subject: assignmentSubject.trim(),
       description: 'Logged via Quick Action',
-      deadline: assignmentDeadline || new Date().toISOString().split('T')[0],
+      deadline: assignmentDeadline || getLocalDateString(),
       status: 'Pending',
     });
 

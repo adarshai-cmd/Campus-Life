@@ -1,8 +1,49 @@
 /**
- * Campus Life - Safe Date Formatting and Parsing Utilities
- * Defends against invalid date strings, timezone shifts, and missing timestamps.
+ * Campus Life - Safe Date Formatting, Device Time, and Parsing Utilities
+ * Manages device-local date, time, and day automatically without UTC timezone offset skew.
  */
 
+/**
+ * Returns YYYY-MM-DD string matching the device's local calendar date.
+ */
+export function getLocalDateString(d: Date = new Date()): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Returns 24h or 12h time formatted string from local device time.
+ */
+export function getLocalTimeString(
+  d: Date = new Date(),
+  options: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' }
+): string {
+  try {
+    return d.toLocaleTimeString(undefined, options);
+  } catch {
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+}
+
+/**
+ * Returns full name of current day (e.g. 'Monday', 'Tuesday') in local device time.
+ */
+export function getLocalDayName(d: Date = new Date()): string {
+  try {
+    return d.toLocaleDateString(undefined, { weekday: 'long' });
+  } catch {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[d.getDay()] || 'Today';
+  }
+}
+
+/**
+ * Parses date string or Date object safely to a local Date instance without throwing.
+ */
 export function parseDateSafe(input: string | Date | null | undefined): Date | null {
   if (!input) return null;
   if (input instanceof Date) {
@@ -38,6 +79,9 @@ export function parseDateSafe(input: string | Date | null | undefined): Date | n
   }
 }
 
+/**
+ * Formats a date using the device's locale and timezone.
+ */
 export function formatDateSafe(
   input: string | Date | null | undefined,
   options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' },
@@ -52,6 +96,9 @@ export function formatDateSafe(
   }
 }
 
+/**
+ * Formats month (e.g. "2026-09" -> "Sep 2026")
+ */
 export function formatMonthSafe(monthKey: string, fallback?: string): string {
   if (!monthKey) return fallback || '—';
   try {

@@ -14,6 +14,7 @@ import {
   SkillMilestone,
 } from '@/types/skills';
 import { Plus, X } from 'lucide-react';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 interface SkillModalProps {
   isOpen: boolean;
@@ -30,7 +31,7 @@ function SkillForm({
   onSave: (data: Omit<Skill, 'id' | 'createdAt' | 'lastUpdated'>) => void;
   onCancel: () => void;
 }) {
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getLocalDateString();
 
   const [name, setName] = useState(initialData?.name || '');
   const [category, setCategory] = useState<SkillCategory>(

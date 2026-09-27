@@ -18,7 +18,7 @@ import {
   Trash2,
   BookOpen,
 } from 'lucide-react';
-import { formatDateSafe } from '@/utils/dateUtils';
+import { formatDateSafe, getLocalDateString } from '@/utils/dateUtils';
 
 export function AssignmentManager() {
   const {
@@ -44,7 +44,7 @@ export function AssignmentManager() {
   const [status, setStatus] = useState<AssignmentStatus>('Pending');
   const [error, setError] = useState('');
 
-  const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);
+  const todayStr = useMemo(() => getLocalDateString(), []);
 
   const filteredAssignments = useMemo(() => {
     return assignments

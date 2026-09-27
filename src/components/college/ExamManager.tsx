@@ -9,7 +9,7 @@ import { Modal } from '@/components/common/Modal';
 import { Input } from '@/components/common/Input';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Calendar, Clock, MapPin, Plus, Edit2, Trash2, Award } from 'lucide-react';
-import { formatDateSafe } from '@/utils/dateUtils';
+import { formatDateSafe, getLocalDateString } from '@/utils/dateUtils';
 
 export function ExamManager() {
   const { exams, addExam, updateExam, deleteExam, upcomingExams } = useCollege();
@@ -30,7 +30,7 @@ export function ExamManager() {
     setEditingExam(null);
     setExamName('');
     setSubject('');
-    setDate(new Date().toISOString().split('T')[0]);
+    setDate(getLocalDateString());
     setTime('10:00');
     setRoom('Exam Hall A');
     setNotes('');

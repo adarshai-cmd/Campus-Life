@@ -9,6 +9,7 @@ import { Modal } from '@/components/common/Modal';
 import { Input } from '@/components/common/Input';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Layers, Calendar, UserCheck, Plus, Edit2, Trash2 } from 'lucide-react';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 export function ProjectManager() {
   const { projects, addProject, updateProject, deleteProject } = useCollege();
@@ -31,7 +32,7 @@ export function ProjectManager() {
     setProjectName('');
     setSubject('');
     setRole('Team Lead');
-    setDeadline(new Date().toISOString().split('T')[0]);
+    setDeadline(getLocalDateString());
     setProgress('20');
     setStatus('In Progress');
     setNotes('');

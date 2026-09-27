@@ -8,6 +8,7 @@ import { SUPPORTED_CURRENCIES } from '@/types/profile';
 import { parseQuickExpenseInput } from '@/services/rules/quickEntryParser';
 import { Button } from '@/components/common/Button';
 import { Zap, Check, ArrowRight, Tag, Plane } from 'lucide-react';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 export function QuickExpenseInput() {
   const { addExpense, categories } = useMoney();
@@ -34,7 +35,7 @@ export function QuickExpenseInput() {
     e.preventDefault();
     if (!parsed || parsed.amount <= 0) return;
 
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = getLocalDateString();
 
     const newExp = addExpense({
       description: parsed.description,

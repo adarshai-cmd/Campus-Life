@@ -6,6 +6,7 @@ import { Expense } from '@/types/money';
 import { storageService } from '@/services/storage/storageService';
 import { useProfile } from './ProfileContext';
 import { useMoney } from './MoneyContext';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 interface TravelContextType {
   trips: Trip[];
@@ -131,7 +132,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         notes?: string;
       }
     ) => {
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayStr = getLocalDateString();
       addExpense({
         description: data.description.trim() || 'Trip Expense',
         amount: Number(data.amount) || 0,
@@ -185,7 +186,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   }, [trips, expenses]);
 
   const analytics: TravelAnalyticsData = useMemo(() => {
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = getLocalDateString();
     const currentYearMonth = todayStr.substring(0, 7);
 
     const totalTrips = tripsWithExpenses.length;

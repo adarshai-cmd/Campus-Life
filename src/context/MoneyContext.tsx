@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useMemo, useCallback } from
 import { Expense, BudgetConfig, SpendingAnalytics, DEFAULT_EXPENSE_CATEGORIES } from '@/types/money';
 import { storageService } from '@/services/storage/storageService';
 import { useProfile } from './ProfileContext';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 interface MoneyContextType {
   expenses: Expense[];
@@ -151,7 +152,7 @@ export function MoneyProvider({ children }: { children: React.ReactNode }) {
   // Automatic calculations
   const analytics: SpendingAnalytics = useMemo(() => {
     const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
+    const todayStr = getLocalDateString(now);
     const currentYearMonth = todayStr.substring(0, 7);
 
     // Start of current week (Monday)

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useProfile } from '@/context/ProfileContext';
 import { useCollege } from '@/context/CollegeContext';
 import { useMoney } from '@/context/MoneyContext';
@@ -14,14 +14,27 @@ import {
   Wallet,
   ShieldCheck,
 } from 'lucide-react';
-
 import { useMounted } from '@/hooks/useMounted';
+import { getLocalTimeString } from '@/utils/dateUtils';
 
 export function DashboardHeader() {
   const { activeProfile } = useProfile();
   const { pendingAssignments, overdueAssignments, attendance, timetable } = useCollege();
   const { analytics } = useMoney();
   const mounted = useMounted();
+
+  const [currentTime, setCurrentTime] = useState<string>('');
+
+  // Keep local device time in sync dynamically
+  useEffect(() => {
+    if (!mounted) return;
+    const updateTime = () => {
+      setCurrentTime(getLocalTimeString(new Date(), { hour: 'numeric', minute: '2-digit' }));
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 10000);
+    return () => clearInterval(interval);
+  }, [mounted]);
 
   const greeting = useMemo(() => {
     if (!mounted) return 'Welcome';
@@ -34,7 +47,7 @@ export function DashboardHeader() {
   const formattedDate = useMemo(() => {
     if (!mounted) return 'Campus Life Desk';
     const now = new Date();
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat(undefined, {
       weekday: 'long',
       month: 'short',
       day: 'numeric',
@@ -144,6 +157,15 @@ export function DashboardHeader() {
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5 flex-wrap">
           <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
           <span>{formattedDate}</span>
+          {currentTime && (
+            <>
+              <span className="text-slate-300 dark:text-slate-700">·</span>
+              <span className="inline-flex items-center gap-1 font-mono text-emerald-700 dark:text-emerald-400 font-medium">
+                <Clock className="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                {currentTime}
+              </span>
+            </>
+          )}
           <span className="text-slate-300 dark:text-slate-700">·</span>
           <span>Semester Desk</span>
         </p>

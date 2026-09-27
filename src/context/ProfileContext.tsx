@@ -6,6 +6,7 @@ import { StorageExportData, ImportValidationResult } from '@/types/storage';
 import { storageService } from '@/services/storage/storageService';
 import { useTheme } from './ThemeContext';
 import { useMounted } from '@/hooks/useMounted';
+import { getLocalDateString } from '@/utils/dateUtils';
 
 interface CreateProfileInput {
   name: string;
@@ -168,7 +169,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data, null, 2));
     const downloadAnchor = document.createElement('a');
     const safeUsername = (activeProfile.username || activeProfile.name).toLowerCase().replace(/[^a-z0-9]/g, '_');
-    const dateStr = new Date().toISOString().split('T')[0];
+    const dateStr = getLocalDateString();
     downloadAnchor.setAttribute('href', dataStr);
     downloadAnchor.setAttribute('download', `campus_life_${safeUsername}_${dateStr}.json`);
     document.body.appendChild(downloadAnchor);
