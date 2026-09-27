@@ -23,7 +23,7 @@ import { useMoney } from '@/context/MoneyContext';
 import { useTravel } from '@/context/TravelContext';
 import { useSkills } from '@/context/SkillsContext';
 import { usePwaInstall } from '@/hooks/usePwaInstall';
-import { IosInstallGuideModal } from '@/components/pwa/IosInstallGuideModal';
+import { PwaInstallToast } from '@/components/pwa/PwaInstallToast';
 import { MAIN_NAV_ITEMS, NavigationSectionId } from '@/types/navigation';
 import { ProfileSwitcherModal } from '@/components/profile/ProfileSwitcherModal';
 import { Download } from 'lucide-react';
@@ -45,7 +45,7 @@ export function Sidebar() {
   const { expenses } = useMoney();
   const { trips } = useTravel();
   const { skills } = useSkills();
-  const { isMounted, isInstalled, isGuideOpen, setIsGuideOpen, install } = usePwaInstall();
+  const { isMounted, isInstalled, toastMessage, setToastMessage, install } = usePwaInstall();
 
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
 
@@ -224,9 +224,9 @@ export function Sidebar() {
         onClose={() => setIsSwitcherOpen(false)}
       />
 
-      <IosInstallGuideModal
-        isOpen={isGuideOpen}
-        onClose={() => setIsGuideOpen(false)}
+      <PwaInstallToast
+        message={toastMessage}
+        onClose={() => setToastMessage(null)}
       />
     </>
   );

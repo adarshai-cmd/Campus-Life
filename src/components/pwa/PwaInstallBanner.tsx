@@ -3,24 +3,24 @@
 import React from 'react';
 import { Download, X, Smartphone } from 'lucide-react';
 import { usePwaInstall } from '@/hooks/usePwaInstall';
-import { IosInstallGuideModal } from './IosInstallGuideModal';
+import { PwaInstallToast } from './PwaInstallToast';
 
 export const PwaInstallBanner: React.FC = () => {
   const {
     isMounted,
     isInstalled,
     isDismissed,
-    isGuideOpen,
-    setIsGuideOpen,
+    toastMessage,
+    setToastMessage,
     install,
     dismissBanner,
   } = usePwaInstall();
 
   if (!isMounted || isInstalled || isDismissed) {
     return (
-      <IosInstallGuideModal
-        isOpen={isGuideOpen}
-        onClose={() => setIsGuideOpen(false)}
+      <PwaInstallToast
+        message={toastMessage}
+        onClose={() => setToastMessage(null)}
       />
     );
   }
@@ -65,9 +65,9 @@ export const PwaInstallBanner: React.FC = () => {
         </div>
       </div>
 
-      <IosInstallGuideModal
-        isOpen={isGuideOpen}
-        onClose={() => setIsGuideOpen(false)}
+      <PwaInstallToast
+        message={toastMessage}
+        onClose={() => setToastMessage(null)}
       />
     </>
   );

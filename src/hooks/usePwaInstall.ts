@@ -32,7 +32,7 @@ export function usePwaInstall() {
   const [, setPromptTick] = useState(0);
   const [isManualDismissed, setIsManualDismissed] = useState(false);
   const [isInstalledEvent, setIsInstalledEvent] = useState(false);
-  const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const onPromptChange = () => setPromptTick((t) => t + 1);
@@ -108,7 +108,7 @@ export function usePwaInstall() {
   const isInstallable = Boolean(globalDeferredPrompt);
 
   const install = useCallback(async () => {
-    // 1. If native beforeinstallprompt is ready, trigger it immediately (Direct 1-Click native install!)
+    // 1. Direct native 1-click install prompt on Android, Chrome, Edge, Windows, Mac
     if (globalDeferredPrompt) {
       try {
         const promptEvent = globalDeferredPrompt;
@@ -121,14 +121,34 @@ export function usePwaInstall() {
         promptListeners.forEach((fn) => fn());
         return choice;
       } catch (err) {
-        console.debug('[PWA] Native prompt handling:', err);
+        console.debug('[PWA] Native prompt invocation:', err);
       }
     }
 
-    // 2. If iOS Safari or browser without native prompt, open the clean guide modal
-    setIsGuideOpen(true);
-    return { outcome: 'guide_opened' };
-  }, []);
+    // 2. iOS Safari handling without tabbed dialogs
+    if (isIos) {
+      if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+        try {
+          await navigator.share({
+            title: 'Campus Life',
+            text: 'Install Campus Life app',
+            url: window.location.href,
+          });
+          return { outcome: 'shared' };
+        } catch {
+          // User dismissed or share sheet closed
+        }
+      }
+      setToastMessage("In Safari, tap Share (⎋) and select 'Add to Home Screen' (+)");
+      setTimeout(() => setToastMessage(null), 5000);
+      return { outcome: 'ios_hint' };
+    }
+
+    // 3. Desktop / Chrome fallback if browser already has install icon in address bar
+    setToastMessage("Click the Install icon (⬇) in your browser address bar to install.");
+    setTimeout(() => setToastMessage(null), 5000);
+    return { outcome: 'browser_hint' };
+  }, [isIos]);
 
   const dismissBanner = useCallback(() => {
     setIsManualDismissed(true);
@@ -162,8 +182,8 @@ export function usePwaInstall() {
     isInstalled,
     isIos,
     isDismissed: isBannerDismissed,
-    isGuideOpen,
-    setIsGuideOpen,
+    toastMessage,
+    setToastMessage,
     install,
     dismissBanner,
     resetDismissal,

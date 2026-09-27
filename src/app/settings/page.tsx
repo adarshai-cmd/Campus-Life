@@ -11,7 +11,7 @@ import { Badge } from '@/components/common/Badge';
 import { Modal } from '@/components/common/Modal';
 import { ProfileSwitcherModal } from '@/components/profile/ProfileSwitcherModal';
 import { usePwaInstall } from '@/hooks/usePwaInstall';
-import { IosInstallGuideModal } from '@/components/pwa/IosInstallGuideModal';
+import { PwaInstallToast } from '@/components/pwa/PwaInstallToast';
 import {
   User,
   Settings as SettingsIcon,
@@ -190,8 +190,8 @@ export default function SettingsPage() {
   const {
     isMounted,
     isInstalled,
-    isGuideOpen,
-    setIsGuideOpen,
+    toastMessage,
+    setToastMessage,
     install,
     clearAppCacheOnly,
   } = usePwaInstall();
@@ -946,9 +946,9 @@ export default function SettingsPage() {
         onClose={() => setIsSwitcherOpen(false)}
       />
 
-      <IosInstallGuideModal
-        isOpen={isGuideOpen}
-        onClose={() => setIsGuideOpen(false)}
+      <PwaInstallToast
+        message={toastMessage}
+        onClose={() => setToastMessage(null)}
       />
     </div>
   );

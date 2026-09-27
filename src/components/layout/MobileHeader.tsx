@@ -7,13 +7,13 @@ import { ChevronsUpDown, Sun, Moon, Download } from 'lucide-react';
 import { useProfile } from '@/context/ProfileContext';
 import { useTheme } from '@/context/ThemeContext';
 import { usePwaInstall } from '@/hooks/usePwaInstall';
-import { IosInstallGuideModal } from '@/components/pwa/IosInstallGuideModal';
+import { PwaInstallToast } from '@/components/pwa/PwaInstallToast';
 import { ProfileSwitcherModal } from '@/components/profile/ProfileSwitcherModal';
 
 export function MobileHeader() {
   const { activeProfile } = useProfile();
   const { resolvedTheme, setTheme } = useTheme();
-  const { isMounted, isInstalled, isGuideOpen, setIsGuideOpen, install } = usePwaInstall();
+  const { isMounted, isInstalled, toastMessage, setToastMessage, install } = usePwaInstall();
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
 
   const initial = activeProfile?.name ? activeProfile.name.charAt(0).toUpperCase() : '?';
@@ -67,9 +67,9 @@ export function MobileHeader() {
         onClose={() => setIsSwitcherOpen(false)}
       />
 
-      <IosInstallGuideModal
-        isOpen={isGuideOpen}
-        onClose={() => setIsGuideOpen(false)}
+      <PwaInstallToast
+        message={toastMessage}
+        onClose={() => setToastMessage(null)}
       />
     </>
   );
