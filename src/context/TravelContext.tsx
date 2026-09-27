@@ -266,10 +266,21 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       .sort((a, b) => a[0].localeCompare(b[0]))
       .slice(-6)
       .map(([monthKey, amount]) => {
-        const [year, month] = monthKey.split('-');
-        const date = new Date(parseInt(year), parseInt(month) - 1, 1);
-        const monthLabel = date.toLocaleString('default', { month: 'short' });
-        return { monthLabel, amount };
+        try {
+          const parts = monthKey.split('-');
+          const year = parseInt(parts[0], 10);
+          const month = parseInt(parts[1], 10);
+          if (isNaN(year) || isNaN(month)) {
+            return { monthLabel: monthKey, amount };
+          }
+          const date = new Date(year, month - 1, 1);
+          const monthLabel = !isNaN(date.getTime())
+            ? date.toLocaleString('default', { month: 'short' })
+            : monthKey;
+          return { monthLabel, amount };
+        } catch {
+          return { monthLabel: monthKey, amount };
+        }
       });
 
     return {

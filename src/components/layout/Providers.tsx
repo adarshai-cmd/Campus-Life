@@ -8,6 +8,7 @@ import { TravelProvider } from '@/context/TravelContext';
 import { CollegeProvider } from '@/context/CollegeContext';
 import { SkillsProvider } from '@/context/SkillsContext';
 import { AppShell } from '@/components/layout/AppShell';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 function ProfileScopedProviders({ children }: { children: React.ReactNode }) {
   const { activeProfile } = useProfile();
@@ -18,7 +19,9 @@ function ProfileScopedProviders({ children }: { children: React.ReactNode }) {
       <TravelProvider key={`travel_${profileKey}`}>
         <CollegeProvider key={`college_${profileKey}`}>
           <SkillsProvider key={`skills_${profileKey}`}>
-            <AppShell>{children}</AppShell>
+            <ErrorBoundary>
+              <AppShell>{children}</AppShell>
+            </ErrorBoundary>
           </SkillsProvider>
         </CollegeProvider>
       </TravelProvider>

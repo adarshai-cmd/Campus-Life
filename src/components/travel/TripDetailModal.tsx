@@ -10,6 +10,7 @@ import { useTravel } from '@/context/TravelContext';
 import { useProfile } from '@/context/ProfileContext';
 import { SUPPORTED_CURRENCIES } from '@/types/profile';
 import { TripExpenseModal } from './TripExpenseModal';
+import { formatDateSafe } from '@/utils/dateUtils';
 import {
   MapPin,
   Calendar,
@@ -103,13 +104,11 @@ export function TripDetailModal({
     }
   };
 
-  const formattedDate = trip.startDate
-    ? new Date(trip.startDate + 'T00:00:00').toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
-    : '—';
+  const formattedDate = formatDateSafe(trip.startDate, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 
   return (
     <>

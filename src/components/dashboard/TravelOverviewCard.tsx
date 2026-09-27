@@ -99,7 +99,7 @@ export function TravelOverviewCard() {
             </span>
             <span className="text-sm font-bold font-mono text-slate-900 dark:text-slate-100">
               {upcoming ? (
-                `${currencyConfig.symbol}${upcoming.plannedBudget.toLocaleString()}`
+                `${currencyConfig.symbol}${(Number(upcoming.plannedBudget) || 0).toLocaleString()}`
               ) : (
                 '—'
               )}
@@ -113,9 +113,9 @@ export function TravelOverviewCard() {
             </span>
             <span className="text-sm font-bold font-mono text-emerald-700 dark:text-emerald-400">
               {upcoming ? (
-                `${currencyConfig.symbol}${upcoming.totalCost.toLocaleString()}`
+                `${currencyConfig.symbol}${(Number(upcoming.totalCost) || 0).toLocaleString()}`
               ) : (
-                `${currencyConfig.symbol}${analytics.totalTravelSpending.toLocaleString()}`
+                `${currencyConfig.symbol}${(Number(analytics.totalTravelSpending) || 0).toLocaleString()}`
               )}
             </span>
           </div>

@@ -105,7 +105,7 @@ export function TravelAnalyticsView() {
           </span>
           <span className="font-semibold text-slate-900 dark:text-slate-100 truncate block">
             {analytics.mostExpensiveTrip
-              ? `${analytics.mostExpensiveTrip.tripName} (${currencyConfig.symbol}${analytics.mostExpensiveTrip.cost.toLocaleString()})`
+              ? `${analytics.mostExpensiveTrip.tripName} (${currencyConfig.symbol}${(Number(analytics.mostExpensiveTrip.cost) || 0).toLocaleString()})`
               : 'None recorded'}
           </span>
         </div>

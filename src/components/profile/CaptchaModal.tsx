@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/common/Button';
 import { ShieldCheck, RotateCw, AlertCircle } from 'lucide-react';

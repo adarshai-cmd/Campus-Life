@@ -18,6 +18,7 @@ import {
   Trash2,
   BookOpen,
 } from 'lucide-react';
+import { formatDateSafe } from '@/utils/dateUtils';
 
 export function AssignmentManager() {
   const {
@@ -175,14 +176,11 @@ export function AssignmentManager() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {filteredAssignments.map((item) => {
             const isOverdue = item.status !== 'Completed' && item.deadline < todayStr;
-            const formattedDeadline = new Date(item.deadline + 'T00:00:00').toLocaleDateString(
-              undefined,
-              {
-                month: 'short',
-                day: 'numeric',
-                weekday: 'short',
-              }
-            );
+            const formattedDeadline = formatDateSafe(item.deadline, {
+              month: 'short',
+              day: 'numeric',
+              weekday: 'short',
+            });
 
             return (
               <div

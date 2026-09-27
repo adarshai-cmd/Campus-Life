@@ -18,6 +18,7 @@ import {
   Plane,
   ReceiptText,
 } from 'lucide-react';
+import { formatDateSafe } from '@/utils/dateUtils';
 
 export function ExpenseTable() {
   const { expenses, deleteExpense, categories } = useMoney();
@@ -189,12 +190,10 @@ export function ExpenseTable() {
             <div className="block sm:hidden space-y-2.5">
               {filteredExpenses.map((exp) => {
                 const tripName = exp.tripId ? tripMap.get(exp.tripId) : null;
-                const formattedDate = exp.date
-                  ? new Date(exp.date + 'T00:00:00').toLocaleDateString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                    })
-                  : '—';
+                const formattedDate = formatDateSafe(exp.date, {
+                  month: 'short',
+                  day: 'numeric',
+                });
 
                 return (
                   <div
@@ -286,12 +285,10 @@ export function ExpenseTable() {
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
                   {filteredExpenses.map((exp) => {
                     const tripName = exp.tripId ? tripMap.get(exp.tripId) : null;
-                    const formattedDate = exp.date
-                      ? new Date(exp.date + 'T00:00:00').toLocaleDateString(undefined, {
-                          month: 'short',
-                          day: 'numeric',
-                        })
-                      : '—';
+                    const formattedDate = formatDateSafe(exp.date, {
+                      month: 'short',
+                      day: 'numeric',
+                    });
 
                     return (
                       <tr

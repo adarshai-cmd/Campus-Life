@@ -30,6 +30,7 @@ export function CampusLifeLogo({
       <div
         className={`relative flex items-center justify-center overflow-hidden bg-white dark:bg-slate-900 shadow-xs border border-slate-200/80 dark:border-slate-800 shrink-0 ${container} ${badgeClassName}`}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/brand/campus-life-logo.png"
           alt="Campus Life Logo"

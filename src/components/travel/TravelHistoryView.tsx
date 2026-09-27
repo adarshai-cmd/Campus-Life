@@ -9,6 +9,7 @@ import { Badge } from '@/components/common/Badge';
 import { EmptyState } from '@/components/common/EmptyState';
 import { TripModal } from './TripModal';
 import { TripDetailModal } from './TripDetailModal';
+import { formatDateSafe, formatMonthSafe } from '@/utils/dateUtils';
 import {
   Search,
   Filter,
@@ -152,15 +153,7 @@ export function TravelHistoryView({ onOpenNewTrip }: { onOpenNewTrip: () => void
   ]);
 
   // Format month YYYY-MM helper
-  const formatMonthLabel = (m: string) => {
-    try {
-      const [year, month] = m.split('-');
-      const d = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
-      return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
-    } catch {
-      return m;
-    }
-  };
+  const formatMonthLabel = (m: string) => formatMonthSafe(m);
 
   return (
     <>
@@ -286,13 +279,11 @@ export function TravelHistoryView({ onOpenNewTrip }: { onOpenNewTrip: () => void
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredTrips.map((trip) => {
-              const formattedDate = trip.startDate
-                ? new Date(trip.startDate + 'T00:00:00').toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })
-                : '—';
+              const formattedDate = formatDateSafe(trip.startDate, {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              });
 
               const isOverBudget = trip.remainingBudget < 0 && trip.plannedBudget > 0;
 

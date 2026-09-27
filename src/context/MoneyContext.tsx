@@ -197,9 +197,13 @@ export function MoneyProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (exp.date) {
-        const expDate = new Date(exp.date + 'T00:00:00');
-        if (expDate >= monday && expDate <= now) {
-          weekTotal += amt;
+        try {
+          const expDate = exp.date.includes('T') ? new Date(exp.date) : new Date(exp.date + 'T00:00:00');
+          if (!isNaN(expDate.getTime()) && expDate >= monday && expDate <= now) {
+            weekTotal += amt;
+          }
+        } catch {
+          // ignore malformed date
         }
       }
     }

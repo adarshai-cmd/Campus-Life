@@ -9,6 +9,7 @@ import { Modal } from '@/components/common/Modal';
 import { Input } from '@/components/common/Input';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Calendar, Clock, MapPin, Plus, Edit2, Trash2, Award } from 'lucide-react';
+import { formatDateSafe } from '@/utils/dateUtils';
 
 export function ExamManager() {
   const { exams, addExam, updateExam, deleteExam, upcomingExams } = useCollege();
@@ -119,7 +120,7 @@ export function ExamManager() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {exams.map((exam) => {
-            const formattedDate = new Date(exam.date + 'T00:00:00').toLocaleDateString(undefined, {
+            const formattedDate = formatDateSafe(exam.date, {
               weekday: 'short',
               month: 'short',
               day: 'numeric',
