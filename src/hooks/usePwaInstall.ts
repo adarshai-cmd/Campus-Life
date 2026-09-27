@@ -10,12 +10,37 @@ interface BeforeInstallPromptEvent extends Event {
 
 const emptySubscribe = () => () => {};
 
+// Global singleton reference so prompt is preserved across all page transitions and components
+let globalDeferredPrompt: BeforeInstallPromptEvent | null = null;
+const promptListeners = new Set<() => void>();
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (e: Event) => {
+    e.preventDefault();
+    globalDeferredPrompt = e as BeforeInstallPromptEvent;
+    promptListeners.forEach((fn) => fn());
+  });
+
+  window.addEventListener('appinstalled', () => {
+    globalDeferredPrompt = null;
+    promptListeners.forEach((fn) => fn());
+  });
+}
+
 export function usePwaInstall() {
   const isMounted = useMounted();
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [, setPromptTick] = useState(0);
   const [isManualDismissed, setIsManualDismissed] = useState(false);
   const [isInstalledEvent, setIsInstalledEvent] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+
+  useEffect(() => {
+    const onPromptChange = () => setPromptTick((t) => t + 1);
+    promptListeners.add(onPromptChange);
+    return () => {
+      promptListeners.delete(onPromptChange);
+    };
+  }, []);
 
   // Subscribe to standalone state (Browser-native detection)
   const isStandalone = useSyncExternalStore(
@@ -80,49 +105,30 @@ export function usePwaInstall() {
 
   const isInstalled = isStandalone || isInstalledEvent;
   const isBannerDismissed = isStoredDismissed || isManualDismissed;
-  const isInstallable = Boolean(deferredPrompt);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-    };
-
-    const handleAppInstalled = () => {
-      setIsInstalledEvent(true);
-      setDeferredPrompt(null);
-      setIsGuideOpen(false);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
-    };
-  }, []);
+  const isInstallable = Boolean(globalDeferredPrompt);
 
   const install = useCallback(async () => {
-    if (deferredPrompt) {
+    // 1. If native beforeinstallprompt is ready, trigger it immediately (Direct 1-Click native install!)
+    if (globalDeferredPrompt) {
       try {
-        await deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice;
+        const promptEvent = globalDeferredPrompt;
+        await promptEvent.prompt();
+        const choice = await promptEvent.userChoice;
         if (choice.outcome === 'accepted') {
           setIsInstalledEvent(true);
         }
-        setDeferredPrompt(null);
+        globalDeferredPrompt = null;
+        promptListeners.forEach((fn) => fn());
         return choice;
       } catch (err) {
-        console.error('[PWA] Prompt error:', err);
+        console.debug('[PWA] Native prompt handling:', err);
       }
     }
-    // If native prompt unavailable (iOS or browser without active deferred prompt), open guide
+
+    // 2. If iOS Safari or browser without native prompt, open the clean guide modal
     setIsGuideOpen(true);
     return { outcome: 'guide_opened' };
-  }, [deferredPrompt]);
+  }, []);
 
   const dismissBanner = useCallback(() => {
     setIsManualDismissed(true);
